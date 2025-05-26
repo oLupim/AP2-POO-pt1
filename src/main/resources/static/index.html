@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Carros API</title>
+</head>
+<body>
+
+<h1>Cadastro de Carros</h1>
+
+<h2>Adicionar Carro</h2>
+<input type="text" id="marca" placeholder="Marca"><br><br>
+<input type="text" id="modelo" placeholder="Modelo"><br><br>
+<input type="number" id="ano" placeholder="Ano"><br><br>
+<button onclick="adicionarCarro()">Adicionar</button>
+
+<h2>Lista de Carros</h2>
+<button onclick="carregarCarros()">Listar Carros</button>
+<ul id="lista"></ul>
+
+<script>
+    const API_URL = "http://localhost:8080/carros";
+
+    // ✅ Adicionar carro
+    function adicionarCarro() {
+        const marca = document.getElementById('marca').value;
+        const modelo = document.getElementById('modelo').value;
+        const ano = document.getElementById('ano').value;
+
+        fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ marca, modelo, ano })
+        })
+            .then(response => response.json())
+            .then(data => {
+                alert("Carro adicionado!");
+                carregarCarros();
+            });
+    }
+
+    // ✅ Listar carros
+    function carregarCarros() {
+        fetch(API_URL)
+            .then(response => response.json())
+            .then(data => {
+                const lista = document.getElementById('lista');
+                lista.innerHTML = '';
+                data.forEach(car => {
+                    const item = document.createElement('li');
+                    item.textContent = `${car.id} - ${car.marca} ${car.modelo} (${car.ano})`;
+                    lista.appendChild(item);
+                });
+            });
+    }
+</script>
+
+</body>
+</html>
